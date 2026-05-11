@@ -1,30 +1,122 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sederhana URL Shortener</title>
+    <title>SURGE_PROTOCOL // URL_SHORTENER</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; background-color: #f4f4f9; }
-        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h2 { color: #333; margin-bottom: 1rem; }
-        input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        #result { margin-top: 20px; padding: 10px; border-top: 1px solid #eee; display: none; }
-        .short-url { font-weight: bold; color: #007bff; word-break: break-all; }
+        /* Estetika Web Lama & Dark Web */
+        body {
+            background-color: #0d0d0d;
+            color: #1ed760; /* Hijau Terminal */
+            font-family: "Courier New", Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .container {
+            border: 2px solid #1ed760;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            background-color: #1a1a1a;
+            box-shadow: 5px 5px 0px #005f27;
+        }
+
+        h2 {
+            border-bottom: 2px solid #1ed760;
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+        }
+
+        .input-group {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+        }
+
+        input {
+            width: 100%;
+            background-color: #000;
+            border: 1px solid #1ed760;
+            color: #1ed760;
+            padding: 10px;
+            box-sizing: border-box;
+            outline: none;
+            margin-bottom: 15px;
+        }
+
+        input:focus {
+            background-color: #0a2a14;
+        }
+
+        button {
+            width: 100%;
+            background-color: #1ed760;
+            color: #000;
+            border: none;
+            padding: 10px;
+            font-family: "Courier New", Courier, monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #15a34a;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px dashed #1ed760;
+            display: none;
+            background-color: #000;
+        }
+
+        .short-url {
+            color: #fff;
+            text-decoration: underline;
+            word-break: break-all;
+        }
+
+        .footer {
+            margin-top: 15px;
+            font-size: 0.6rem;
+            color: #005f27;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>URL Shortener</h2>
-    <input type="url" id="longUrl" placeholder="Masukkan URL panjang di sini (https://...)" required>
-    <button onclick="shorten()">Perpendek URL</button>
+    <h2>[ COMMAND_CENTER : SHORTEN_URL ]</h2>
+    
+    <div class="input-group">
+        <label for="longUrl">> ENTER_LONG_URL_TARGET:</label>
+        <input type="url" id="longUrl" placeholder="HTTP://ANYWHERE.COM/LONG-ID-123" required>
+        
+        <button onclick="shorten()">GENERATE_SHORT_LINK</button>
+    </div>
 
     <div id="result">
-        <p>Hasil URL Pendek:</p>
+        <p>> OUTPUT_LINK_GENERATED:</p>
         <a id="shortLink" class="short-url" href="#" target="_blank"></a>
+    </div>
+
+    <div class="footer">
+        STATUS: ENCRYPTED // VERSION: 1.0.42
     </div>
 </div>
 
@@ -35,7 +127,7 @@
         const shortLink = document.getElementById('shortLink');
 
         if (!longUrl) {
-            alert("Silakan masukkan URL terlebih dahulu!");
+            alert("SYSTEM ERROR: INPUT_NULL");
             return;
         }
 
@@ -49,16 +141,15 @@
             const data = await response.json();
 
             if (response.ok) {
-                // Tampilkan hasil
                 resultDiv.style.display = 'block';
                 shortLink.href = data.short_url;
-                shortLink.innerText = data.short_url;
+                shortLink.innerText = data.short_url.toUpperCase();
             } else {
-                alert("Error: " + data.error);
+                alert("ACCESS_DENIED: " + data.error);
             }
         } catch (err) {
             console.error(err);
-            alert("Gagal menghubungi server.");
+            alert("CONNECTION_LOST: SERVER_UNREACHABLE");
         }
     }
 </script>
