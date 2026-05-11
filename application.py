@@ -19,7 +19,7 @@ def shorten_url():
     long_url = data.get('long_url')
 
     if not long_url:
-        return jsonify({"error": "URL original diperlukan"}), 400
+        return jsonify({"error": "URL Needed"}), 400
 
     short_id = str(uuid.uuid4())[:6]
 

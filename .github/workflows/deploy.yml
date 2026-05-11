@@ -25,3 +25,16 @@ jobs:
 
     - name: Copy Deployment Package to S3
       run: aws s3 cp deploy_package.zip s3://surge-072468084963-ap-southeast-1-an/deploy_package.zip
+
+    - name: Create new Elastic Beanstalk Application Version
+      run: |
+        aws elasticbeanstalk create-application-version \
+          --application-name "surge-app" \
+          --version-label "ver-${{ github.sha }}" \
+          --source-bundle S3Bucket="surge-072468084963-ap-southeast-1-an",S3Key="deploy_package.zip"
+
+    - name: Deploy new Version
+      run: |
+        aws elasticbeanstalk update-environment \
+          --environment-name "Surge-app-env" \
+          --version-label "ver-${{ github.sha }}"
