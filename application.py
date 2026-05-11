@@ -37,7 +37,7 @@ def shorten_url():
             "short_url": short_url,
             "original_url": long_url
         }), 201
-        
+        #
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 if __name__ == '__main__':
