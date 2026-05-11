@@ -52,12 +52,10 @@ def shorten_url():
 @application.route('/<short_id>', methods=['GET'])
 def redirect_to_url(short_id):
     try:
-        # Mencari data di DynamoDB berdasarkan short_id
         response = table.get_item(Key={'short_id': short_id})
         item = response.get('Item')
 
         if item:
-            # Jika ketemu, arahkan browser ke URL asli yang disimpan
             return redirect(item['long_url'])
         else:
             return "URL tidak ditemukan atau sudah kadaluwarsa.", 404
