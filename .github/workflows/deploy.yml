@@ -21,8 +21,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ap-shoutheast-1
+        aws-region: ap-southeast-1
 
-    # 4. Upload ke S3
     - name: Copy Deployment Package to S3
       run: aws s3 cp deploy_package.zip s3://surge-072468084963-ap-southeast-1-an/deploy_package.zip
