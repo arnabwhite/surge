@@ -14,7 +14,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Create ZIP Deployment Package
-      run: zip -r deploy_package.zip application.py requirements.txt
+      run: zip -r deploy_package.zip application.py requirements.txt templates/
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
