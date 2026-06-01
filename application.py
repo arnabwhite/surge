@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, render_template, redirect
 import boto3
 import uuid
 import os
-
+#haha
 application = Flask(__name__)
 
 dynamodb = boto3.resource('dynamodb', region_name='ap-southeast-1')
