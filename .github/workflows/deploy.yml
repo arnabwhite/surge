@@ -52,9 +52,9 @@ jobs:
         ENV_STATUS=$(aws elasticbeanstalk describe-environments --application-name "$APP_NAME" --environment-names "$ENV_NAME" --include-deleted --query 'Environments[0].Status' --output text 2>/dev/null || echo "None")
         if [ "$ENV_STATUS" = "None" ]; then
           echo "Environment '$ENV_NAME' not found. Creating it..."
-          SOLUTION_STACK_NAME=$(aws elasticbeanstalk list-available-solution-stacks --query 'SolutionStacks[]' --output text | grep -E '64bit Amazon Linux 2023.*Python 3\.12|64bit Amazon Linux 2023.*Python 3\.' | head -n1 || true)
+          SOLUTION_STACK_NAME=$(aws elasticbeanstalk list-available-solution-stacks --output json | jq -r '.SolutionStacks | map(select(contains("64bit Amazon Linux 2023") and contains("Python 3.12"))) | .[0] // empty')
           if [ -z "$SOLUTION_STACK_NAME" ]; then
-            SOLUTION_STACK_NAME=$(aws elasticbeanstalk list-available-solution-stacks --query 'SolutionStacks[]' --output text | grep -E 'Python 3\.' | head -n1 || true)
+            SOLUTION_STACK_NAME=$(aws elasticbeanstalk list-available-solution-stacks --output json | jq -r '.SolutionStacks | map(select(contains("64bit Amazon Linux 2023") and contains("Python"))) | .[0] // empty')
           fi
           if [ -z "$SOLUTION_STACK_NAME" ]; then
             echo "ERROR: No supported Python solution stack found."
