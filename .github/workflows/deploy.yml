@@ -26,15 +26,40 @@ jobs:
     - name: Copy Deployment Package to S3
       run: aws s3 cp deploy_package.zip s3://surge-072468084963-ap-southeast-1-an/deploy_package.zip
 
-    - name: Create new Elastic Beanstalk Application Version
+    - name: Create or update Elastic Beanstalk application and environment
       run: |
-        aws elasticbeanstalk create-application-version \
-          --application-name "surge-app" \
-          --version-label "ver-${{ github.sha }}" \
-          --source-bundle S3Bucket="surge-072468084963-ap-southeast-1-an",S3Key="deploy_package.zip"
+        set -euo pipefail
 
-    - name: Deploy new Version
-      run: |
-        aws elasticbeanstalk update-environment \
-          --environment-name "Surge-app-env" \
-          --version-label "ver-${{ github.sha }}"
+        APP_NAME="surge-app"
+        ENV_NAME="Surge-app-env"
+        VERSION_LABEL="ver-${{ github.sha }}"
+        S3_BUCKET="surge-072468084963-ap-southeast-1-an"
+        S3_KEY="deploy_package.zip"
+
+        APP_EXISTS=$(aws elasticbeanstalk describe-applications --application-names "$APP_NAME" --query 'Applications[0].ApplicationName' --output text 2>/dev/null || echo "None")
+        if [ "$APP_EXISTS" = "None" ]; then
+          echo "Application '$APP_NAME' not found. Creating it..."
+          aws elasticbeanstalk create-application --application-name "$APP_NAME" --description "Surge app"
+        else
+          echo "Application '$APP_NAME' already exists."
+        fi
+
+        aws elasticbeanstalk create-application-version \
+          --application-name "$APP_NAME" \
+          --version-label "$VERSION_LABEL" \
+          --source-bundle S3Bucket="$S3_BUCKET",S3Key="$S3_KEY"
+
+        ENV_STATUS=$(aws elasticbeanstalk describe-environments --application-name "$APP_NAME" --environment-names "$ENV_NAME" --include-deleted --query 'Environments[0].Status' --output text 2>/dev/null || echo "None")
+        if [ "$ENV_STATUS" = "None" ]; then
+          echo "Environment '$ENV_NAME' not found. Creating it..."
+          aws elasticbeanstalk create-environment \
+            --application-name "$APP_NAME" \
+            --environment-name "$ENV_NAME" \
+            --version-label "$VERSION_LABEL" \
+            --solution-stack-name "64bit Amazon Linux 2 v5.6.8 running Python 3.11"
+        else
+          echo "Environment '$ENV_NAME' exists (status: $ENV_STATUS). Updating it..."
+          aws elasticbeanstalk update-environment \
+            --environment-name "$ENV_NAME" \
+            --version-label "$VERSION_LABEL"
+        fi
